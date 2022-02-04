@@ -1,35 +1,78 @@
 const mysql = require("mysql2");
 const inquirer = require("inquirer");
-const sequelize = require('./config/connection');
 
-sequelize.query(
-    ";",
-    async function (err, ) {
-        if (err) {
-            console.error(err);
-            process.exit(1);
+// create db connection
+const db = mysql.createConnection({
+    host: "localhost",
+    // MySQL username,
+    user: "root",
+    // MySQL password
+    password: "PinkSkeleton28!",
+    database: "employee_db",
+  });
+
+// main menu prompt with switch case
+function starter () {
+    db.query(
+        "SELECT employees.id, first_name, last_name, title, salary, department_name FROM departments JOIN roles ON departments.id = roles.department_id JOIN employees ON employees.role_id = roles.id;",
+        async function mainMenu (err) {
+            if (err) {
+                console.error(err);
+                process.exit(1);
+            };
+            const menuOptions = await inquirer.prompt([{
+                type: "list",
+                message: "What would you like to do?",
+                name: "mainMenu",
+                choices: [
+                    "View All Roles",
+                    "Update Employee Role",
+                    "Add Role",
+                    "View All Departments",
+                    "Add Department",
+                    "View All Employees",
+                    "Add Employee",
+                    "QUIT"
+                ],
+            }]);
+            switch (menuOptions.mainMenu) {
+                case "View All Roles":
+                    viewAllRoles();
+                    break;
+                case "Update Employee Role":
+                    updateEmpRole();
+                    break;
+                case "Add Role":
+                    addRole();
+                    break;
+                case "View All Departments":
+                    viewAllDpts();
+                    break;
+                case "Add Department":
+                    addDpt();
+                    break;
+                case "View All Employees":
+                    viewAllEmps();
+                    break;
+                case "Add Employee":
+                    addEmp();
+                    break;
+                case "QUIT":
+                    db.end();
+                default:
+                    db.end();
+            };
         }
-        // prompt the user to choose an order
-        const {  } = await inquirer.prompt([
-            {
-                type: 'list',
-                name: 'Main question',
-                message: 'What would you like to do?',
-                choices: [],
-            },
-        ])
+    );
+};
+
+function viewAllRoles() {
+    const sql = "SELECT * FROM roles";
+    db.query(sql, function(err, results) {
+        console.log(results);
     });
-    
-    // {
-    //   type: "list",
-    //   name: "orderId",
-    //   message: "Pick an order to edit",
-    //   // create array of choices from the order data
-    //   choices: allOrders.map((o) => ({
-    //     name: `${o.order_id} | ${o.first_name} ${o.last_name} | ${o.order_details}`,
-    //     value: o.order_id,
-    //   })),
-    // },
+}
+
         // {
         //     type: 'input',
         //     name: 'Add Department',
@@ -86,4 +129,5 @@ sequelize.query(
         //     message: 'Which role do you want to assign the selected employee?',
         //     choices: [],
         // },
+starter();
     
