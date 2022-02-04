@@ -66,12 +66,41 @@ function starter () {
     );
 };
 
+// -- viewAllRoles()
 function viewAllRoles() {
     const sql = "SELECT * FROM roles";
     db.query(sql, function(err, results) {
-        console.log(results);
+        if (err) throw err;
+        console.table(results);
     });
+    starter();
 }
+
+// -- updateEmpRole()
+
+
+// -- addRole()
+
+
+// -- viewAllDpts()
+function viewAllDpts() {
+    const sql = "SELECT * FROM departments";
+    db.query(sql, function(err, results) {
+        if (err) throw err;
+        console.table(results);
+    });
+    starter();
+}
+
+
+// -- addDpt()
+
+
+// -- viewAllEmps()
+
+
+// -- addEmp()
+
 
         // {
         //     type: 'input',
