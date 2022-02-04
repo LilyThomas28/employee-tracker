@@ -68,7 +68,7 @@ function starter () {
 
 // -- viewAllRoles()
 function viewAllRoles() {
-    const sql = "SELECT * FROM roles";
+    const sql = "SELECT * FROM roles;";
     db.query(sql, function(err, results) {
         if (err) throw err;
         console.table(results);
@@ -77,27 +77,61 @@ function viewAllRoles() {
 }
 
 // -- updateEmpRole()
-
-
-// -- addRole()
-
-
-// -- viewAllDpts()
-function viewAllDpts() {
-    const sql = "SELECT * FROM departments";
-    db.query(sql, function(err, results) {
+function updateEmpRole() {
+    db.query("select employees.id, employees.first_name, employees.last_name from employees;", async function (err, allEmployees) {
+        if (err) {
+          console.error(err);
+          process.exit(1);
+        }
+        const { empChosen } = await inquirer.prompt([{
+            type: 'list',
+            name: 'Update Employee Role',
+            message: 'Which employees role do you want to update?',
+            choices: allEmployees.map((employees) => ({
+                name: `${employees.first_name} ${employees.last_name}`,
+                value: employees.id, 
+            }))
+    }]);
+    const sql = "UPDATE employee SET role_id = ? WHERE first_name = ?;";
+    db.query(sql, [empChosen], function(err, results) {
         if (err) throw err;
         console.table(results);
     });
     starter();
 }
+// {
+//     type: 'list',
+//     name: 'Employees New Role',
+//     message: 'Which role do you want to assign the selected employee?',
+//     choices: [],
+// },
 
+// -- addRole()
+
+
+// -- viewAllDpts()
+// function viewAllDpts() {
+//     const sql = "SELECT * FROM departments;";
+//     db.query(sql, function(err, results) {
+//         if (err) throw err;
+//         console.table(results);
+//     });
+//     starter();
+// }
 
 // -- addDpt()
 
 
 // -- viewAllEmps()
-
+// function viewAllEmps() {
+    
+//     const sql = "SELECT * FROM employees;";
+//     db.query(sql, function(err, results) {
+//         if (err) throw err;
+//         console.table(results);
+//     });
+//     starter();
+// }
 
 // -- addEmp()
 
@@ -158,5 +192,3 @@ function viewAllDpts() {
         //     message: 'Which role do you want to assign the selected employee?',
         //     choices: [],
         // },
-starter();
-    
