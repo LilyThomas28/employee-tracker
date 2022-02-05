@@ -162,11 +162,28 @@ function viewAllDpts() {
 }
 
 // -- addDpt()
-// {
-//     type: 'input',
-//     name: 'Add Department',
-//     message: 'What is the name of the department?',
-// },
+function addDpt() {
+    db.query("SELECT first_name, last_name, title FROM departments JOIN roles ON departments.id = roles.department_id JOIN employees ON employees.role_id = roles.id;"), 
+    async (err) => {
+            if (err) {
+                console.error(err);
+                process.exit(1);
+            }
+            const newDpt = await inquirer.prompt([{
+                type: 'input',
+                name: 'Add Department',
+                message: 'What is the name of the department?',
+            },
+            ]);
+            const sql = "INSERT INTO departments (department_name) VALUES (?)";
+            db.query(sql, newDpt, (err, results) => {
+                if (err)
+                    throw err;
+                console.table(results);
+            });
+            starter();
+        }
+}
 
 
 // -- viewAllEmps()
